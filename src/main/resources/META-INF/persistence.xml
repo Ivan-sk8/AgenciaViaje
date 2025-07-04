@@ -5,7 +5,7 @@
     <class>com.trivago.agenciaviaje.modelo.Sucursal</class>
     <class>com.trivago.agenciaviaje.modelo.Turista</class>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="$objectdb/db/agencia.odb"/>
+      <property name="javax.persistence.jdbc.url" value="agencia.odb"/>
       <property name="javax.persistence.jdbc.user" value="admin"/>
       <property name="javax.persistence.jdbc.password" value="admin"/>
     </properties>
