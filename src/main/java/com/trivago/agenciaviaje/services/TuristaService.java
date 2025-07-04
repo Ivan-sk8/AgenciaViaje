@@ -65,24 +65,7 @@ public class TuristaService {
             throw e;
         }
     }
-    
-    /**
-     * Buscar turista por ID
-     */
-    public Turista buscarTuristaPorId(Long id) {
-        return em.find(Turista.class, id);
-    }
-    
-    /**
-     * Buscar turista por código
-     */
-    public Turista buscarTuristaPorCodigo(String codigo) {
-        TypedQuery<Turista> query = em.createQuery(
-            "SELECT t FROM Turista t WHERE t.codigoTurista = :codigo", Turista.class);
-        query.setParameter("codigo", codigo);
-        List<Turista> resultados = query.getResultList();
-        return resultados.isEmpty() ? null : resultados.get(0);
-    }
+
     
     /**
      * Obtener todos los turistas

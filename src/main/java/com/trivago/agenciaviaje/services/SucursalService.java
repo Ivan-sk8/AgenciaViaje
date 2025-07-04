@@ -66,23 +66,6 @@ public class SucursalService {
         }
     }
     
-    /**
-     * Buscar sucursal por ID
-     */
-    public Sucursal buscarSucursalPorId(Long id) {
-        return em.find(Sucursal.class, id);
-    }
-    
-    /**
-     * Buscar sucursal por código
-     */
-    public Sucursal buscarSucursalPorCodigo(String codigo) {
-        TypedQuery<Sucursal> query = em.createQuery(
-            "SELECT s FROM Sucursal s WHERE s.codigoSucursal = :codigo", Sucursal.class);
-        query.setParameter("codigo", codigo);
-        List<Sucursal> resultados = query.getResultList();
-        return resultados.isEmpty() ? null : resultados.get(0);
-    }
     
     /**
      * Obtener todas las sucursales

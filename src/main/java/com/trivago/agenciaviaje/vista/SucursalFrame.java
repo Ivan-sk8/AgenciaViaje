@@ -92,7 +92,7 @@ public class SucursalFrame extends JFrame {
         // Botón Eliminar (rojo)
         btnEliminar = new JButton("Eliminar");
         btnEliminar.setBackground(Color.RED);
-        btnEliminar.setForeground(Color.WHITE);
+        btnEliminar.setForeground(Color.BLACK);
         btnEliminar.setPreferredSize(new Dimension(160, 30));
         
         // Botón Limpiar (gris)

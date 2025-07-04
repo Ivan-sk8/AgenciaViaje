@@ -2,8 +2,6 @@ package com.trivago.agenciaviaje.modelo;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Clase que representa una sucursal de la agencia de viajes
@@ -19,9 +17,6 @@ public class Sucursal implements Serializable {
     private String codigoSucursal;
     private String direccion;
     private String telefono;
-    
-    @OneToMany(mappedBy = "sucursal", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Vuelo> vuelos = new ArrayList<>();
     
     // Constructores
     public Sucursal() {}
@@ -44,9 +39,6 @@ public class Sucursal implements Serializable {
     
     public String getTelefono() { return telefono; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
-    
-    public List<Vuelo> getVuelos() { return vuelos; }
-    public void setVuelos(List<Vuelo> vuelos) { this.vuelos = vuelos; }
     
     @Override
     public String toString() {
