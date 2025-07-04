@@ -3,6 +3,7 @@ package com.trivago.agenciaviaje.vista;
 import com.trivago.agenciaviaje.modelo.Turista;
 import com.trivago.agenciaviaje.services.TuristaService;
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +17,7 @@ public class TuristaFrame extends JFrame {
     
     private TuristaService turistaService;
     private JTextField txtCodigo, txtNombre, txtApellidos, txtDireccion, txtTelefono;
-    private JButton btnGuardar, btnActualizar, btnEliminar, btnLimpiar;
+    private JButton btnGuardar, btnActualizar, btnEliminar, btnLimpiar, btnRefrescar;
     private JTable tablaTuristas;
     private TuristaTableModel modeloTabla;
     
@@ -31,70 +32,133 @@ public class TuristaFrame extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
         
-        // Panel superior con formulario
-        JPanel panelSuperior = new JPanel();
-        panelSuperior.setLayout(new BoxLayout(panelSuperior, BoxLayout.Y_AXIS));
-        panelSuperior.setBorder(BorderFactory.createTitledBorder("Datos del Turista"));
+        // Panel principal con diseño horizontal
+        JPanel panelPrincipal = new JPanel(new BorderLayout());
         
-        // Panel de campos
-        JPanel panelCampos = new JPanel(new GridLayout(5, 2, 5, 5));
-        panelCampos.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        // Panel izquierdo - Formulario
+        JPanel panelIzquierdo = new JPanel();
+        panelIzquierdo.setLayout(new BoxLayout(panelIzquierdo, BoxLayout.Y_AXIS));
+        panelIzquierdo.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createEtchedBorder(), 
+            "Datos del Turista", 
+            TitledBorder.LEFT, 
+            TitledBorder.TOP
+        ));
+        panelIzquierdo.setPreferredSize(new Dimension(280, 500));
         
-        panelCampos.add(new JLabel("Código:"));
-        txtCodigo = new JTextField();
-        panelCampos.add(txtCodigo);
+        // Crear formulario con campos
+        JPanel panelFormulario = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.anchor = GridBagConstraints.WEST;
         
-        panelCampos.add(new JLabel("Nombre:"));
-        txtNombre = new JTextField();
-        panelCampos.add(txtNombre);
+        // Campo Código
+        gbc.gridx = 0; gbc.gridy = 0;
+        panelFormulario.add(new JLabel("Código:"), gbc);
+        gbc.gridy = 1;
+        txtCodigo = new JTextField(20);
+        panelFormulario.add(txtCodigo, gbc);
         
-        panelCampos.add(new JLabel("Apellidos:"));
-        txtApellidos = new JTextField();
-        panelCampos.add(txtApellidos);
+        // Campo Nombre
+        gbc.gridy = 2;
+        panelFormulario.add(new JLabel("Nombre:"), gbc);
+        gbc.gridy = 3;
+        txtNombre = new JTextField(20);
+        panelFormulario.add(txtNombre, gbc);
         
-        panelCampos.add(new JLabel("Dirección:"));
-        txtDireccion = new JTextField();
-        panelCampos.add(txtDireccion);
+        // Campo Apellidos
+        gbc.gridy = 4;
+        panelFormulario.add(new JLabel("Apellidos:"), gbc);
+        gbc.gridy = 5;
+        txtApellidos = new JTextField(20);
+        panelFormulario.add(txtApellidos, gbc);
         
-        panelCampos.add(new JLabel("Teléfono:"));
-        txtTelefono = new JTextField();
-        panelCampos.add(txtTelefono);
+        // Campo Dirección
+        gbc.gridy = 6;
+        panelFormulario.add(new JLabel("Dirección:"), gbc);
+        gbc.gridy = 7;
+        txtDireccion = new JTextField(20);
+        panelFormulario.add(txtDireccion, gbc);
+        
+        // Campo Teléfono
+        gbc.gridy = 8;
+        panelFormulario.add(new JLabel("Teléfono:"), gbc);
+        gbc.gridy = 9;
+        txtTelefono = new JTextField(20);
+        panelFormulario.add(txtTelefono, gbc);
         
         // Panel de botones
-        JPanel panelBotones = new JPanel(new FlowLayout());
+        JPanel panelBotones = new JPanel(new GridLayout(5, 1, 5, 5));
+        panelBotones.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        
+        // Botón Guardar (verde)
         btnGuardar = new JButton("Guardar");
+        btnGuardar.setBackground(Color.GREEN);
+        btnGuardar.setForeground(Color.BLACK);
+        btnGuardar.setPreferredSize(new Dimension(160, 30));
+        
+        // Botón Actualizar (azul)
         btnActualizar = new JButton("Actualizar");
+        btnActualizar.setBackground(Color.CYAN);
+        btnActualizar.setForeground(Color.BLACK);
+        btnActualizar.setPreferredSize(new Dimension(160, 30));
+        
+        // Botón Eliminar (rojo)
         btnEliminar = new JButton("Eliminar");
+        btnEliminar.setBackground(Color.RED);
+        btnEliminar.setForeground(Color.WHITE);
+        btnEliminar.setPreferredSize(new Dimension(160, 30));
+        
+        // Botón Limpiar (gris)
         btnLimpiar = new JButton("Limpiar");
+        btnLimpiar.setBackground(Color.LIGHT_GRAY);
+        btnLimpiar.setForeground(Color.BLACK);
+        btnLimpiar.setPreferredSize(new Dimension(160, 30));
+        
+        // Botón Refrescar (gris)
+        btnRefrescar = new JButton("Refrescar");
+        btnRefrescar.setBackground(Color.LIGHT_GRAY);
+        btnRefrescar.setForeground(Color.BLACK);
+        btnRefrescar.setPreferredSize(new Dimension(160, 30));
         
         panelBotones.add(btnGuardar);
         panelBotones.add(btnActualizar);
         panelBotones.add(btnEliminar);
         panelBotones.add(btnLimpiar);
+        panelBotones.add(btnRefrescar);
         
-        panelSuperior.add(panelCampos);
-        panelSuperior.add(panelBotones);
+        // Agregar componentes al panel izquierdo
+        panelIzquierdo.add(panelFormulario);
+        panelIzquierdo.add(Box.createVerticalStrut(20));
+        panelIzquierdo.add(panelBotones);
         
-        // Panel inferior con tabla
-        JPanel panelInferior = new JPanel(new BorderLayout());
-        panelInferior.setBorder(BorderFactory.createTitledBorder("Lista de Turistas"));
+        // Panel derecho - Tabla
+        JPanel panelDerecho = new JPanel(new BorderLayout());
+        panelDerecho.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createEtchedBorder(), 
+            "Lista de Turistas", 
+            TitledBorder.LEFT, 
+            TitledBorder.TOP
+        ));
         
+        // Crear tabla
         modeloTabla = new TuristaTableModel();
         tablaTuristas = new JTable(modeloTabla);
         tablaTuristas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
         JScrollPane scrollPane = new JScrollPane(tablaTuristas);
-        scrollPane.setPreferredSize(new Dimension(600, 200));
-        panelInferior.add(scrollPane, BorderLayout.CENTER);
+        panelDerecho.add(scrollPane, BorderLayout.CENTER);
         
-        // Agregar paneles al frame
-        add(panelSuperior, BorderLayout.NORTH);
-        add(panelInferior, BorderLayout.CENTER);
+        // Agregar paneles al panel principal
+        panelPrincipal.add(panelIzquierdo, BorderLayout.WEST);
+        panelPrincipal.add(panelDerecho, BorderLayout.CENTER);
+        
+        add(panelPrincipal, BorderLayout.CENTER);
         
         // Configurar eventos
         configurarEventos();
         
-        setSize(650, 500);
+        // Configurar ventana
+        setSize(900, 600);
         setLocationRelativeTo(null);
     }
     
@@ -127,6 +191,13 @@ public class TuristaFrame extends JFrame {
             }
         });
         
+        btnRefrescar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cargarDatos();
+            }
+        });
+        
         // Evento para seleccionar fila de la tabla
         tablaTuristas.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
@@ -139,8 +210,8 @@ public class TuristaFrame extends JFrame {
     }
     
     private void guardarTurista() {
-        if (validarCampos()) {
-            try {
+        try {
+            if (validarCampos()) {
                 Turista turista = new Turista();
                 turista.setCodigoTurista(txtCodigo.getText().trim());
                 turista.setNombre(txtNombre.getText().trim());
@@ -149,20 +220,20 @@ public class TuristaFrame extends JFrame {
                 turista.setTelefono(txtTelefono.getText().trim());
                 
                 turistaService.guardarTurista(turista);
-                JOptionPane.showMessageDialog(this, "Turista guardado exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Turista guardado exitosamente");
                 limpiarCampos();
                 cargarDatos();
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Error al guardar: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al guardar: " + e.getMessage());
         }
     }
     
     private void actualizarTurista() {
         int filaSeleccionada = tablaTuristas.getSelectedRow();
         if (filaSeleccionada >= 0) {
-            if (validarCampos()) {
-                try {
+            try {
+                if (validarCampos()) {
                     Turista turista = modeloTabla.getTuristaEnFila(filaSeleccionada);
                     turista.setCodigoTurista(txtCodigo.getText().trim());
                     turista.setNombre(txtNombre.getText().trim());
@@ -171,15 +242,15 @@ public class TuristaFrame extends JFrame {
                     turista.setTelefono(txtTelefono.getText().trim());
                     
                     turistaService.actualizarTurista(turista);
-                    JOptionPane.showMessageDialog(this, "Turista actualizado exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Turista actualizado exitosamente");
                     limpiarCampos();
                     cargarDatos();
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(this, "Error al actualizar: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error al actualizar: " + e.getMessage());
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Seleccione un turista de la tabla para actualizar", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Seleccione un turista para actualizar");
         }
     }
     
@@ -187,25 +258,33 @@ public class TuristaFrame extends JFrame {
         int filaSeleccionada = tablaTuristas.getSelectedRow();
         if (filaSeleccionada >= 0) {
             int respuesta = JOptionPane.showConfirmDialog(this, 
-                "¿Está seguro de que desea eliminar este turista?", 
+                "¿Está seguro de eliminar este turista?", 
                 "Confirmar eliminación", 
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.YES_NO_OPTION);
             
             if (respuesta == JOptionPane.YES_OPTION) {
                 try {
                     Turista turista = modeloTabla.getTuristaEnFila(filaSeleccionada);
                     turistaService.eliminarTurista(turista.getId());
-                    JOptionPane.showMessageDialog(this, "Turista eliminado exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Turista eliminado exitosamente");
                     limpiarCampos();
                     cargarDatos();
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(this, "Error al eliminar: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Error al eliminar: " + e.getMessage());
                 }
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Seleccione un turista de la tabla para eliminar", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Seleccione un turista para eliminar");
         }
+    }
+    
+    private void cargarDatosTurista(int fila) {
+        Turista turista = modeloTabla.getTuristaEnFila(fila);
+        txtCodigo.setText(turista.getCodigoTurista());
+        txtNombre.setText(turista.getNombre());
+        txtApellidos.setText(turista.getApellidos());
+        txtDireccion.setText(turista.getDireccion());
+        txtTelefono.setText(turista.getTelefono());
     }
     
     private void limpiarCampos() {
@@ -219,30 +298,18 @@ public class TuristaFrame extends JFrame {
     
     private boolean validarCampos() {
         if (txtCodigo.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "El código es obligatorio", "Error de validación", JOptionPane.ERROR_MESSAGE);
-            txtCodigo.requestFocus();
+            JOptionPane.showMessageDialog(this, "El código es obligatorio");
             return false;
         }
         if (txtNombre.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "El nombre es obligatorio", "Error de validación", JOptionPane.ERROR_MESSAGE);
-            txtNombre.requestFocus();
+            JOptionPane.showMessageDialog(this, "El nombre es obligatorio");
             return false;
         }
         if (txtApellidos.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Los apellidos son obligatorios", "Error de validación", JOptionPane.ERROR_MESSAGE);
-            txtApellidos.requestFocus();
+            JOptionPane.showMessageDialog(this, "Los apellidos son obligatorios");
             return false;
         }
         return true;
-    }
-    
-    private void cargarDatosTurista(int fila) {
-        Turista turista = modeloTabla.getTuristaEnFila(fila);
-        txtCodigo.setText(turista.getCodigoTurista());
-        txtNombre.setText(turista.getNombre());
-        txtApellidos.setText(turista.getApellidos());
-        txtDireccion.setText(turista.getDireccion() != null ? turista.getDireccion() : "");
-        txtTelefono.setText(turista.getTelefono() != null ? turista.getTelefono() : "");
     }
     
     private void cargarDatos() {
@@ -250,7 +317,7 @@ public class TuristaFrame extends JFrame {
             List<Turista> turistas = turistaService.obtenerTodosLosTuristas();
             modeloTabla.setTuristas(turistas);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar los datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error al cargar datos: " + e.getMessage());
         }
     }
     
