@@ -1,7 +1,7 @@
 package com.trivago.agenciaviaje.vista;
 
-import com.trivago.agenciaviaje.modelo.Sucursal;
-import com.trivago.agenciaviaje.services.SucursalService;
+import com.trivago.agenciaviaje.modelo.Turista;
+import com.trivago.agenciaviaje.services.TuristaService;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -9,25 +9,25 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
- * Interfaz gráfica para el módulo de registro de sucursales
+ * Interfaz gráfica para el módulo de registro de turistas
  * @author ivan_
  */
-public class SucursalFrame extends JFrame {
+public class TuristaFrame extends JFrame {
     
-    private SucursalService sucursalService;
-    private JTextField txtCodigo, txtDireccion, txtTelefono;
+    private TuristaService turistaService;
+    private JTextField txtCodigo, txtNombre, txtApellidos, txtDireccion, txtTelefono;
     private JButton btnGuardar, btnActualizar, btnEliminar, btnBuscar, btnLimpiar;
-    private JTable tablaSucursales;
-    private SucursalTableModel modeloTabla;
+    private JTable tablaTuristas;
+    private TuristaTableModel modeloTabla;
     
-    public SucursalFrame() {
-        sucursalService = new SucursalService();
+    public TuristaFrame() {
+        turistaService = new TuristaService();
         inicializarComponentes();
         cargarDatos();
     }
     
     private void inicializarComponentes() {
-        setTitle("Gestión de Sucursales - Agencia de Viajes");
+        setTitle("Gestión de Turistas - Agencia de Viajes");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         
@@ -43,15 +43,29 @@ public class SucursalFrame extends JFrame {
         txtCodigo = new JTextField(15);
         panelFormulario.add(txtCodigo, gbc);
         
-        // Dirección
+        // Nombre
         gbc.gridx = 0; gbc.gridy = 1;
+        panelFormulario.add(new JLabel("Nombre:"), gbc);
+        gbc.gridx = 1;
+        txtNombre = new JTextField(15);
+        panelFormulario.add(txtNombre, gbc);
+        
+        // Apellidos
+        gbc.gridx = 0; gbc.gridy = 2;
+        panelFormulario.add(new JLabel("Apellidos:"), gbc);
+        gbc.gridx = 1;
+        txtApellidos = new JTextField(15);
+        panelFormulario.add(txtApellidos, gbc);
+        
+        // Dirección
+        gbc.gridx = 0; gbc.gridy = 3;
         panelFormulario.add(new JLabel("Dirección:"), gbc);
         gbc.gridx = 1;
         txtDireccion = new JTextField(15);
         panelFormulario.add(txtDireccion, gbc);
         
         // Teléfono
-        gbc.gridx = 0; gbc.gridy = 2;
+        gbc.gridx = 0; gbc.gridy = 4;
         panelFormulario.add(new JLabel("Teléfono:"), gbc);
         gbc.gridx = 1;
         txtTelefono = new JTextField(15);
@@ -72,9 +86,9 @@ public class SucursalFrame extends JFrame {
         panelBotones.add(btnLimpiar);
         
         // Tabla
-        modeloTabla = new SucursalTableModel();
-        tablaSucursales = new JTable(modeloTabla);
-        JScrollPane scrollPane = new JScrollPane(tablaSucursales);
+        modeloTabla = new TuristaTableModel();
+        tablaTuristas = new JTable(modeloTabla);
+        JScrollPane scrollPane = new JScrollPane(tablaTuristas);
         
         // Agregar componentes al frame
         add(panelFormulario, BorderLayout.NORTH);
@@ -92,28 +106,28 @@ public class SucursalFrame extends JFrame {
         btnGuardar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                guardarSucursal();
+                guardarTurista();
             }
         });
         
         btnActualizar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                actualizarSucursal();
+                actualizarTurista();
             }
         });
         
         btnEliminar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                eliminarSucursal();
+                eliminarTurista();
             }
         });
         
         btnBuscar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                buscarSucursal();
+                buscarTurista();
             }
         });
         
@@ -125,26 +139,28 @@ public class SucursalFrame extends JFrame {
         });
         
         // Evento para seleccionar fila de la tabla
-        tablaSucursales.getSelectionModel().addListSelectionListener(e -> {
+        tablaTuristas.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                int filaSeleccionada = tablaSucursales.getSelectedRow();
+                int filaSeleccionada = tablaTuristas.getSelectedRow();
                 if (filaSeleccionada >= 0) {
-                    cargarDatosSucursal(filaSeleccionada);
+                    cargarDatosTurista(filaSeleccionada);
                 }
             }
         });
     }
     
-    private void guardarSucursal() {
+    private void guardarTurista() {
         try {
-            Sucursal sucursal = new Sucursal();
-            sucursal.setCodigoSucursal(txtCodigo.getText().trim());
-            sucursal.setDireccion(txtDireccion.getText().trim());
-            sucursal.setTelefono(txtTelefono.getText().trim());
+            Turista turista = new Turista();
+            turista.setCodigoTurista(txtCodigo.getText().trim());
+            turista.setNombre(txtNombre.getText().trim());
+            turista.setApellidos(txtApellidos.getText().trim());
+            turista.setDireccion(txtDireccion.getText().trim());
+            turista.setTelefono(txtTelefono.getText().trim());
             
-            if (validarDatos(sucursal)) {
-                sucursalService.guardarSucursal(sucursal);
-                JOptionPane.showMessageDialog(this, "Sucursal guardada exitosamente");
+            if (validarDatos(turista)) {
+                turistaService.guardarTurista(turista);
+                JOptionPane.showMessageDialog(this, "Turista guardado exitosamente");
                 limpiarCampos();
                 cargarDatos();
             }
@@ -153,18 +169,20 @@ public class SucursalFrame extends JFrame {
         }
     }
     
-    private void actualizarSucursal() {
-        int filaSeleccionada = tablaSucursales.getSelectedRow();
+    private void actualizarTurista() {
+        int filaSeleccionada = tablaTuristas.getSelectedRow();
         if (filaSeleccionada >= 0) {
             try {
-                Sucursal sucursal = modeloTabla.getSucursalEnFila(filaSeleccionada);
-                sucursal.setCodigoSucursal(txtCodigo.getText().trim());
-                sucursal.setDireccion(txtDireccion.getText().trim());
-                sucursal.setTelefono(txtTelefono.getText().trim());
+                Turista turista = modeloTabla.getTuristaEnFila(filaSeleccionada);
+                turista.setCodigoTurista(txtCodigo.getText().trim());
+                turista.setNombre(txtNombre.getText().trim());
+                turista.setApellidos(txtApellidos.getText().trim());
+                turista.setDireccion(txtDireccion.getText().trim());
+                turista.setTelefono(txtTelefono.getText().trim());
                 
-                if (validarDatos(sucursal)) {
-                    sucursalService.actualizarSucursal(sucursal);
-                    JOptionPane.showMessageDialog(this, "Sucursal actualizada exitosamente");
+                if (validarDatos(turista)) {
+                    turistaService.actualizarTurista(turista);
+                    JOptionPane.showMessageDialog(this, "Turista actualizado exitosamente");
                     limpiarCampos();
                     cargarDatos();
                 }
@@ -172,23 +190,23 @@ public class SucursalFrame extends JFrame {
                 JOptionPane.showMessageDialog(this, "Error al actualizar: " + e.getMessage());
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Seleccione una sucursal para actualizar");
+            JOptionPane.showMessageDialog(this, "Seleccione un turista para actualizar");
         }
     }
     
-    private void eliminarSucursal() {
-        int filaSeleccionada = tablaSucursales.getSelectedRow();
+    private void eliminarTurista() {
+        int filaSeleccionada = tablaTuristas.getSelectedRow();
         if (filaSeleccionada >= 0) {
             int respuesta = JOptionPane.showConfirmDialog(this, 
-                "¿Está seguro de eliminar esta sucursal?", 
+                "¿Está seguro de eliminar este turista?", 
                 "Confirmar eliminación", 
                 JOptionPane.YES_NO_OPTION);
             
             if (respuesta == JOptionPane.YES_OPTION) {
                 try {
-                    Sucursal sucursal = modeloTabla.getSucursalEnFila(filaSeleccionada);
-                    sucursalService.eliminarSucursal(sucursal.getId());
-                    JOptionPane.showMessageDialog(this, "Sucursal eliminada exitosamente");
+                    Turista turista = modeloTabla.getTuristaEnFila(filaSeleccionada);
+                    turistaService.eliminarTurista(turista.getId());
+                    JOptionPane.showMessageDialog(this, "Turista eliminado exitosamente");
                     limpiarCampos();
                     cargarDatos();
                 } catch (Exception e) {
@@ -196,19 +214,19 @@ public class SucursalFrame extends JFrame {
                 }
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Seleccione una sucursal para eliminar");
+            JOptionPane.showMessageDialog(this, "Seleccione un turista para eliminar");
         }
     }
     
-    private void buscarSucursal() {
+    private void buscarTurista() {
         String codigo = txtCodigo.getText().trim();
         if (!codigo.isEmpty()) {
             try {
-                Sucursal sucursal = sucursalService.buscarSucursalPorCodigo(codigo);
-                if (sucursal != null) {
-                    cargarDatosSucursal(sucursal);
+                Turista turista = turistaService.buscarTuristaPorCodigo(codigo);
+                if (turista != null) {
+                    cargarDatosTurista(turista);
                 } else {
-                    JOptionPane.showMessageDialog(this, "Sucursal no encontrada");
+                    JOptionPane.showMessageDialog(this, "Turista no encontrado");
                 }
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Error al buscar: " + e.getMessage());
@@ -218,30 +236,38 @@ public class SucursalFrame extends JFrame {
         }
     }
     
-    private void cargarDatosSucursal(int fila) {
-        Sucursal sucursal = modeloTabla.getSucursalEnFila(fila);
-        cargarDatosSucursal(sucursal);
+    private void cargarDatosTurista(int fila) {
+        Turista turista = modeloTabla.getTuristaEnFila(fila);
+        cargarDatosTurista(turista);
     }
     
-    private void cargarDatosSucursal(Sucursal sucursal) {
-        txtCodigo.setText(sucursal.getCodigoSucursal());
-        txtDireccion.setText(sucursal.getDireccion());
-        txtTelefono.setText(sucursal.getTelefono());
+    private void cargarDatosTurista(Turista turista) {
+        txtCodigo.setText(turista.getCodigoTurista());
+        txtNombre.setText(turista.getNombre());
+        txtApellidos.setText(turista.getApellidos());
+        txtDireccion.setText(turista.getDireccion());
+        txtTelefono.setText(turista.getTelefono());
     }
     
     private void limpiarCampos() {
         txtCodigo.setText("");
+        txtNombre.setText("");
+        txtApellidos.setText("");
         txtDireccion.setText("");
         txtTelefono.setText("");
     }
     
-    private boolean validarDatos(Sucursal sucursal) {
-        if (sucursal.getCodigoSucursal().isEmpty()) {
+    private boolean validarDatos(Turista turista) {
+        if (turista.getCodigoTurista().isEmpty()) {
             JOptionPane.showMessageDialog(this, "El código es obligatorio");
             return false;
         }
-        if (sucursal.getDireccion().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "La dirección es obligatoria");
+        if (turista.getNombre().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El nombre es obligatorio");
+            return false;
+        }
+        if (turista.getApellidos().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Los apellidos son obligatorios");
             return false;
         }
         return true;
@@ -249,8 +275,8 @@ public class SucursalFrame extends JFrame {
     
     private void cargarDatos() {
         try {
-            List<Sucursal> sucursales = sucursalService.obtenerTodasLasSucursales();
-            modeloTabla.setSucursales(sucursales);
+            List<Turista> turistas = turistaService.obtenerTodosLosTuristas();
+            modeloTabla.setTuristas(turistas);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al cargar datos: " + e.getMessage());
         }
@@ -258,8 +284,8 @@ public class SucursalFrame extends JFrame {
     
     @Override
     public void dispose() {
-        if (sucursalService != null) {
-            sucursalService.cerrar();
+        if (turistaService != null) {
+            turistaService.cerrar();
         }
         super.dispose();
     }

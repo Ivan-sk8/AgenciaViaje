@@ -9,6 +9,27 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>22</maven.compiler.source>
         <maven.compiler.target>22</maven.compiler.target>
-        <exec.mainClass>com.trivago.agenciaviaje.AgenciaViaje</exec.mainClass>
+        <exec.mainClass>com.trivago.agenciaviajes.app</exec.mainClass>
     </properties>
+    
+    <repositories>
+        <repository>
+            <id>objectdb</id>
+            <name>ObjectDB Repository</name>
+            <url>https://m2.objectdb.com</url>
+        </repository>
+    </repositories>
+    
+    <dependencies>
+        <dependency>
+            <groupId>com.objectdb</groupId>
+            <artifactId>objectdb</artifactId>
+            <version>2.8.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>javax.persistence</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+    </dependencies>
 </project>
