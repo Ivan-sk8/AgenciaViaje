@@ -16,7 +16,7 @@ public class SucursalFrame extends JFrame {
     
     private SucursalService sucursalService;
     private JTextField txtCodigo, txtDireccion, txtTelefono;
-    private JButton btnGuardar, btnActualizar, btnEliminar, btnBuscar, btnLimpiar;
+    private JButton btnGuardar, btnActualizar, btnEliminar, btnLimpiar;
     private JTable tablaSucursales;
     private SucursalTableModel modeloTabla;
     
@@ -27,64 +27,66 @@ public class SucursalFrame extends JFrame {
     }
     
     private void inicializarComponentes() {
-        setTitle("Gestión de Sucursales - Agencia de Viajes");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setTitle("Gestión de Sucursales");
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
         
-        // Panel de formulario
-        JPanel panelFormulario = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
+        // Panel superior con formulario
+        JPanel panelSuperior = new JPanel();
+        panelSuperior.setLayout(new BoxLayout(panelSuperior, BoxLayout.Y_AXIS));
+        panelSuperior.setBorder(BorderFactory.createTitledBorder("Datos de la Sucursal"));
         
-        // Código
-        gbc.gridx = 0; gbc.gridy = 0;
-        panelFormulario.add(new JLabel("Código:"), gbc);
-        gbc.gridx = 1;
-        txtCodigo = new JTextField(15);
-        panelFormulario.add(txtCodigo, gbc);
+        // Panel de campos
+        JPanel panelCampos = new JPanel(new GridLayout(3, 2, 5, 5));
+        panelCampos.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
-        // Dirección
-        gbc.gridx = 0; gbc.gridy = 1;
-        panelFormulario.add(new JLabel("Dirección:"), gbc);
-        gbc.gridx = 1;
-        txtDireccion = new JTextField(15);
-        panelFormulario.add(txtDireccion, gbc);
+        panelCampos.add(new JLabel("Código:"));
+        txtCodigo = new JTextField();
+        panelCampos.add(txtCodigo);
         
-        // Teléfono
-        gbc.gridx = 0; gbc.gridy = 2;
-        panelFormulario.add(new JLabel("Teléfono:"), gbc);
-        gbc.gridx = 1;
-        txtTelefono = new JTextField(15);
-        panelFormulario.add(txtTelefono, gbc);
+        panelCampos.add(new JLabel("Dirección:"));
+        txtDireccion = new JTextField();
+        panelCampos.add(txtDireccion);
+        
+        panelCampos.add(new JLabel("Teléfono:"));
+        txtTelefono = new JTextField();
+        panelCampos.add(txtTelefono);
         
         // Panel de botones
         JPanel panelBotones = new JPanel(new FlowLayout());
         btnGuardar = new JButton("Guardar");
         btnActualizar = new JButton("Actualizar");
         btnEliminar = new JButton("Eliminar");
-        btnBuscar = new JButton("Buscar");
         btnLimpiar = new JButton("Limpiar");
         
         panelBotones.add(btnGuardar);
         panelBotones.add(btnActualizar);
         panelBotones.add(btnEliminar);
-        panelBotones.add(btnBuscar);
         panelBotones.add(btnLimpiar);
         
-        // Tabla
+        panelSuperior.add(panelCampos);
+        panelSuperior.add(panelBotones);
+        
+        // Panel inferior con tabla
+        JPanel panelInferior = new JPanel(new BorderLayout());
+        panelInferior.setBorder(BorderFactory.createTitledBorder("Lista de Sucursales"));
+        
         modeloTabla = new SucursalTableModel();
         tablaSucursales = new JTable(modeloTabla);
+        tablaSucursales.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
         JScrollPane scrollPane = new JScrollPane(tablaSucursales);
+        scrollPane.setPreferredSize(new Dimension(600, 200));
+        panelInferior.add(scrollPane, BorderLayout.CENTER);
         
-        // Agregar componentes al frame
-        add(panelFormulario, BorderLayout.NORTH);
-        add(panelBotones, BorderLayout.CENTER);
-        add(scrollPane, BorderLayout.SOUTH);
+        // Agregar paneles al frame
+        add(panelSuperior, BorderLayout.NORTH);
+        add(panelInferior, BorderLayout.CENTER);
         
-        // Eventos
+        // Configurar eventos
         configurarEventos();
         
-        pack();
+        setSize(650, 450);
         setLocationRelativeTo(null);
     }
     
@@ -110,13 +112,6 @@ public class SucursalFrame extends JFrame {
             }
         });
         
-        btnBuscar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                buscarSucursal();
-            }
-        });
-        
         btnLimpiar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -136,43 +131,43 @@ public class SucursalFrame extends JFrame {
     }
     
     private void guardarSucursal() {
-        try {
-            Sucursal sucursal = new Sucursal();
-            sucursal.setCodigoSucursal(txtCodigo.getText().trim());
-            sucursal.setDireccion(txtDireccion.getText().trim());
-            sucursal.setTelefono(txtTelefono.getText().trim());
-            
-            if (validarDatos(sucursal)) {
+        if (validarCampos()) {
+            try {
+                Sucursal sucursal = new Sucursal();
+                sucursal.setCodigoSucursal(txtCodigo.getText().trim());
+                sucursal.setDireccion(txtDireccion.getText().trim());
+                sucursal.setTelefono(txtTelefono.getText().trim());
+                
                 sucursalService.guardarSucursal(sucursal);
-                JOptionPane.showMessageDialog(this, "Sucursal guardada exitosamente");
+                JOptionPane.showMessageDialog(this, "Sucursal guardada exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCampos();
                 cargarDatos();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error al guardar: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al guardar: " + e.getMessage());
         }
     }
     
     private void actualizarSucursal() {
         int filaSeleccionada = tablaSucursales.getSelectedRow();
         if (filaSeleccionada >= 0) {
-            try {
-                Sucursal sucursal = modeloTabla.getSucursalEnFila(filaSeleccionada);
-                sucursal.setCodigoSucursal(txtCodigo.getText().trim());
-                sucursal.setDireccion(txtDireccion.getText().trim());
-                sucursal.setTelefono(txtTelefono.getText().trim());
-                
-                if (validarDatos(sucursal)) {
+            if (validarCampos()) {
+                try {
+                    Sucursal sucursal = modeloTabla.getSucursalEnFila(filaSeleccionada);
+                    sucursal.setCodigoSucursal(txtCodigo.getText().trim());
+                    sucursal.setDireccion(txtDireccion.getText().trim());
+                    sucursal.setTelefono(txtTelefono.getText().trim());
+                    
                     sucursalService.actualizarSucursal(sucursal);
-                    JOptionPane.showMessageDialog(this, "Sucursal actualizada exitosamente");
+                    JOptionPane.showMessageDialog(this, "Sucursal actualizada exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                     limpiarCampos();
                     cargarDatos();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error al actualizar: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Error al actualizar: " + e.getMessage());
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Seleccione una sucursal para actualizar");
+            JOptionPane.showMessageDialog(this, "Seleccione una sucursal de la tabla para actualizar", "Advertencia", JOptionPane.WARNING_MESSAGE);
         }
     }
     
@@ -180,71 +175,53 @@ public class SucursalFrame extends JFrame {
         int filaSeleccionada = tablaSucursales.getSelectedRow();
         if (filaSeleccionada >= 0) {
             int respuesta = JOptionPane.showConfirmDialog(this, 
-                "¿Está seguro de eliminar esta sucursal?", 
+                "¿Está seguro de que desea eliminar esta sucursal?", 
                 "Confirmar eliminación", 
-                JOptionPane.YES_NO_OPTION);
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
             
             if (respuesta == JOptionPane.YES_OPTION) {
                 try {
                     Sucursal sucursal = modeloTabla.getSucursalEnFila(filaSeleccionada);
                     sucursalService.eliminarSucursal(sucursal.getId());
-                    JOptionPane.showMessageDialog(this, "Sucursal eliminada exitosamente");
+                    JOptionPane.showMessageDialog(this, "Sucursal eliminada exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                     limpiarCampos();
                     cargarDatos();
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(this, "Error al eliminar: " + e.getMessage());
+                    JOptionPane.showMessageDialog(this, "Error al eliminar: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Seleccione una sucursal para eliminar");
+            JOptionPane.showMessageDialog(this, "Seleccione una sucursal de la tabla para eliminar", "Advertencia", JOptionPane.WARNING_MESSAGE);
         }
-    }
-    
-    private void buscarSucursal() {
-        String codigo = txtCodigo.getText().trim();
-        if (!codigo.isEmpty()) {
-            try {
-                Sucursal sucursal = sucursalService.buscarSucursalPorCodigo(codigo);
-                if (sucursal != null) {
-                    cargarDatosSucursal(sucursal);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Sucursal no encontrada");
-                }
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Error al buscar: " + e.getMessage());
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Ingrese un código para buscar");
-        }
-    }
-    
-    private void cargarDatosSucursal(int fila) {
-        Sucursal sucursal = modeloTabla.getSucursalEnFila(fila);
-        cargarDatosSucursal(sucursal);
-    }
-    
-    private void cargarDatosSucursal(Sucursal sucursal) {
-        txtCodigo.setText(sucursal.getCodigoSucursal());
-        txtDireccion.setText(sucursal.getDireccion());
-        txtTelefono.setText(sucursal.getTelefono());
     }
     
     private void limpiarCampos() {
         txtCodigo.setText("");
         txtDireccion.setText("");
         txtTelefono.setText("");
+        tablaSucursales.clearSelection();
     }
     
-    private boolean validarDatos(Sucursal sucursal) {
-        if (sucursal.getCodigoSucursal().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "El código es obligatorio");
+    private boolean validarCampos() {
+        if (txtCodigo.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El código es obligatorio", "Error de validación", JOptionPane.ERROR_MESSAGE);
+            txtCodigo.requestFocus();
             return false;
         }
-        if (sucursal.getDireccion().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "La dirección es obligatoria");
+        if (txtDireccion.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "La dirección es obligatoria", "Error de validación", JOptionPane.ERROR_MESSAGE);
+            txtDireccion.requestFocus();
             return false;
         }
         return true;
+    }
+    
+    private void cargarDatosSucursal(int fila) {
+        Sucursal sucursal = modeloTabla.getSucursalEnFila(fila);
+        txtCodigo.setText(sucursal.getCodigoSucursal());
+        txtDireccion.setText(sucursal.getDireccion());
+        txtTelefono.setText(sucursal.getTelefono() != null ? sucursal.getTelefono() : "");
     }
     
     private void cargarDatos() {
@@ -252,7 +229,7 @@ public class SucursalFrame extends JFrame {
             List<Sucursal> sucursales = sucursalService.obtenerTodasLasSucursales();
             modeloTabla.setSucursales(sucursales);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar datos: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error al cargar los datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
     
